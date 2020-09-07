@@ -1,0 +1,32 @@
+# 3 manual steps:
+# sudo yum install git -q -y
+# git clone https://github.com/mikevostrikov/2020-ontario-covid19-severe.git
+# source 2020-ontario-covid19-severe/helper/aws-lambda-deploy
+
+# Install python
+sudo amazon-linux-extras enable python3.8
+sudo yum install python38 -q -y
+
+# Prepare virtual environment, download dependencies
+python3.8 -m venv aws-lambda-venv
+source aws-lambda-venv/bin/activate
+cd 2020-ontario-covid19-severe
+BASEDIR=$(pwd)
+python3.8 helper/ipynb_to_py.py etl/pipeline.ipynb etl/pipeline.py
+python3.8 -m venv aws-lambda-package
+source $BASEDIR/aws-lambda-package/bin/activate
+pip install -r etl/requirements.txt
+deactivate
+
+# Prepare aws lambda package
+cd $BASEDIR/aws-lambda-package/lib/python3.8/site-packages
+zip -r9 $BASEDIR/aws-lambda-package.zip *
+cd $BASEDIR/etl
+zip -g $BASEDIR/aws-lambda-package.zip *.py
+cd $BASEDIR
+
+# Upload aws lambda package to S3
+aws s3 cp aws-lambda-package.zip s3://2020-ontario-covid19-severe
+
+# Update the lambda function with the new package
+aws lambda update-function-code --region us-east-1 --function-name 2020-ontario-covid19-severe --s3-bucket 2020-ontario-covid19-severe --s3-key aws-lambda-package.zip
