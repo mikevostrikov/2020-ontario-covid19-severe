@@ -3,10 +3,10 @@
 It is common to see the _reported number of people tested positive_ as an ultimate metric of the spread of the COVID-19. The metric's problem is that many factors significantly impact the metric's value, and these factors can change arbitrarily over time.
 
 Some of these factors are:
-- most people are not getting tested, and the number of people getting tested changes over time
-- policies regarding who is eligible or required to be tested change over time
-- the availability of the tests changes over time
-- the quality of tests changes over time
+- most people are not getting tested, and the number of people getting tested
+- policies regarding who is eligible or required to be tested
+- the availability of the tests
+- the quality of tests
 
 That is why the metric is not the best for monitoring the disease's spread over long periods of time (e.g. longer than two or three weeks).
 
